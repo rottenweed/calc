@@ -7,7 +7,11 @@ require('ffi');
 
 module OpticsLib
     extend(FFI::Library);
-    ffi_lib('D:\\hy\ruby\git\calc\calc_lib.dll');
+    $CurPath = Dir.pwd;
+    $CurPath += File::SEPARATOR;
+    $CurPath.gsub!(File::SEPARATOR, File::ALT_SEPARATOR) if(File::ALT_SEPARATOR != nil);
+    $DllName = $CurPath + 'calc_lib.dll';
+    ffi_lib($DllName);
     attach_function(:cal_light_intensity, [:int, :int, :double, :double,
         :double, :double, :double, :double], :double);
 end
