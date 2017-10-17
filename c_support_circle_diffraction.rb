@@ -32,9 +32,9 @@ Theta_step = 0.05 * (2 * Math::PI) / (360 * 3600);
 Len_step = D / 100.0;
 CSV = File.open("support_diffraction.csv", "w");
 
-#require('benchmark');
-#Benchmark.bm do |bm|
-#    bm.report("Cal:") do
+require('benchmark');
+Benchmark.bm do |bm|
+    bm.report("Cal:") do
 
 #require('profile');
 
@@ -49,8 +49,8 @@ point_cnt = 10000 * Math::PI / 4;
     CSV.print("\n");
 }
 
-#    end
-#end
+    end
+end
 
 CSV.close;
 
