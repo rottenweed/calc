@@ -41,4 +41,5 @@ calc_lib.bat
   
 c_support_circle_diffraction.rb
   使用ffi gem调用C函数动态链接库，实现有中央副镜和十字支架遮挡的情况下，平行光的圆孔衍射计算。
+  使用相对目录和Windows路径的兼容处理。
   用时约为纯ruby版本的1/10（Ruby 2.4.2）。
