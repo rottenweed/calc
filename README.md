@@ -19,6 +19,9 @@ gauss.rb
 
 csv_dup4.rb
   在CSV格式下，将以下的1/4象限的衍射计算的结果对称复制到全部4个象限。
+
+square_diffraction.rb
+  平行光的正方形孔衍射计算。
   
 round_diffraction.rb
   平行光的圆孔衍射计算。
