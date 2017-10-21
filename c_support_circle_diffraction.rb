@@ -41,8 +41,8 @@ Benchmark.bm do |bm|
 # total points in the full round
 point_cnt = 10000 * Math::PI / 4;
 # angle are signed as (i, j) * Theta_step
-150.downto(0) {|i|
-    150.downto(0) {|j|
+300.downto(0) {|i|
+    300.downto(0) {|j|
         light_intensity = OpticsLib.cal_light_intensity(i, j, Theta_step, Len_step, D, D2, W, WaveLength);
         CSV.print(light_intensity / point_cnt, ",");
     }
