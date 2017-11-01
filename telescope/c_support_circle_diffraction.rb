@@ -25,9 +25,10 @@ D = 80.0;   # mm
 # the diameter of the second mirror
 D2 = 24.0;  # mm
 # the width of the support
-W = 6.4;    # mm
+W = 1.6;    # mm
 # step of diffraction angle, count as arc-second
-Theta_step = 0.05 * (2 * Math::PI) / (360 * 3600);
+Arc_second = (2 * Math::PI) / (360 * 3600);
+Theta_step = 0.05 * Arc_second;
 # step of lens sub-area
 Len_step = D / 100.0;
 CSV = File.open("support_diffraction.csv", "w");
