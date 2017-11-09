@@ -17,6 +17,16 @@ s2x.rb
 gauss.rb
   高斯概率分布函数。
 
+Rayleigh_Dist.rb
+  瑞利概率分布函数。
+
+integration.rb
+  数值积分计算。
+  辛普生算法（Simpson）
+  
+telescope\
+用于望远镜光阑衍射的一些计算。
+
 csv_dup4.rb
   在CSV格式下，将以下的1/4象限的衍射计算的结果对称复制到全部4个象限。
 
@@ -46,3 +56,6 @@ c_support_circle_diffraction.rb
   使用ffi gem调用C函数动态链接库，实现有中央副镜和十字支架遮挡的情况下，平行光的圆孔衍射计算。
   使用相对目录和Windows路径的兼容处理。
   用时约为纯ruby版本的1/10（Ruby 2.4.2）。
+
+delta_cep\
+保存造夫一变星（Delta Cep）的目视星等观测记录。
