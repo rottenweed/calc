@@ -23,6 +23,14 @@ end
 def linear_x(x)
     x;
 end
-sum = Simpson(0, 1, 10, :linear_x);
-print sum;
+
+require 'test/unit'
+class Test_integration < Test::Unit::TestCase
+    def test_Simpson
+        sum = Simpson(0, 1, 10, :linear_x);
+        assert_in_delta(0.5, sum, 1e-8, "Simpson integration error!");
+        print("Simpson integration = #{sum}\n");
+        print("Error = #{sum - 0.5}\n");
+    end
+end
 =end
