@@ -11,11 +11,11 @@ def Simpson(x_start, x_end, div_cnt, func)
     div_cnt.times {|i|
         func_mid = send(func, div_start + x_step / 2.0);
         func_end = send(func, div_start + x_step);
-        sum += x_step * (func_start + 4 * func_mid + func_end) / 6.0;
+        sum += (func_start + 4 * func_mid + func_end) / 6.0;
         func_start = func_end;
         div_start += x_step;
     }
-    return sum;
+    return x_step * sum;
 end
 
 # test for Simpson
