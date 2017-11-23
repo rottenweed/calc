@@ -2,7 +2,7 @@
 
 def Simpson(x_start, x_end, div_cnt, func)
     if((div_cnt.class != Integer) || (div_cnt <= 0))
-        raise "div_cnt should be an integer more than 0!"
+        raise "div_cnt must be an integer larger than 0!"
     end
     x_step = 1.0 * (x_end - x_start) / div_cnt;
     div_start = x_start;
