@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdlib.h>
 #include "calc_lib.h"
 
 double cal_light_intensity(int i, int j,
