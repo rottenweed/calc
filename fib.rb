@@ -38,6 +38,6 @@ print("\nTest 2:\n");
 
 print("\nEquation:\n");
 1.upto(20) {|i|
-    print("#{RATIO1 ** i * RATIO2 + RATIO3 ** i * RATIO4}\n");
+    print("#{(RATIO1 ** i - RATIO3 ** i) / Math.sqrt(5.0) }\n");
 }
 
