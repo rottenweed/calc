@@ -1,7 +1,7 @@
 #! /usr/bin/ruby -w
 
 print("Cal CRC parallel function.\n");
-CRC_CODE = 0x8005;  //CRC-16: x^16 + x^15 + x^2 + 1
+CRC_CODE = 0x8005;  #CRC-16: x^16 + x^15 + x^2 + 1
 CRC_LEN = 16;
 CRC_BIT_CNT = 8;
 
