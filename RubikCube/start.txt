@@ -3,21 +3,21 @@ w w w
 w w w
 
 r r r
-g r o
-b o r
+o r r
+y b b
 
 b b b
-g b y
-y b r
+y b g
+o b g
 
 o o o
-g o b
-b y o
+r o y
+r g y
 
 g g g
-y g r
-g b y
+b g y
+o g b
 
-o y g
-o y r
-y r y
+r o y
+y y r
+g o y

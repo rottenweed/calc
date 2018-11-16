@@ -1,124 +1,184 @@
 #include <stdio.h>
 
-unsigned char cube_start[6][9] = {
-                        {'w', 'w', 'w', //top, z+
-                        'w', 'w', 'w',
-                        'w', 'w', 'w'},
-                        {'r', 'r', 'r', //hor0, x+
-                        'r', 'r', 'r',
-                        'r', 'r', 'r'},
-                        {'b', 'b', 'b', //hor1, y+
-                        'b', 'b', 'b',
-                        'b', 'b', 'b'},
-                        {'o', 'o', 'o', //hor2
-                        'o', 'o', 'o',
-                        'o', 'o', 'o'},
-                        {'g', 'g', 'g', //hor3
-                        'g', 'g', 'g',
-                        'g', 'g', 'g'},
-                        {'y', 'y', 'y', //bottom
-                        'y', 'y', 'y',
-                        'y', 'y', 'y'}
+unsigned char cube_start[6 * 9] = {
+    'w', 'w', 'w', //top, z+
+    'w', 'w', 'w',
+    'w', 'w', 'w',
+    'r', 'r', 'r', //hor0, x+
+    'r', 'r', 'r',
+    'r', 'r', 'r',
+    'b', 'b', 'b', //hor1, y+
+    'b', 'b', 'b',
+    'b', 'b', 'b',
+    'o', 'o', 'o', //hor2
+    'o', 'o', 'o',
+    'o', 'o', 'o',
+    'g', 'g', 'g', //hor3
+    'g', 'g', 'g',
+    'g', 'g', 'g',
+    'y', 'y', 'y', //bottom
+    'y', 'y', 'y',
+    'y', 'y', 'y'
 };
 
-void rotate(unsigned char rotate_type, unsigned char *cube)
+void rotate(unsigned char rotate_type, unsigned char *cube_in, unsigned char *cube_out)
 {
-    unsigned char temp[9];
-/*
+    int i;
+
     switch(rotate_type) {
         case 0: //x = -1
-            temp[0] = cube[0][0]; temp[1] = cube[0][1]; temp[2] = cube[0][2];
-            cube[0][0] = cube[2][2]; cube[0][1] = cube[2][5]; cube[0][2] = cube[2][8];
-            cube[2][2] = cube[5][8]; cube[2][5] = cube[5][7]; cube[2][8] = cube[5][6];
-            cube[5][8] = cube[4][6]; cube[5][7] = cube[4][3]; cube[5][6] = cube[4][0];
-            cube[4][6] = temp[0]; cube[4][3] = temp[1]; cube[4][0] = temp[2];
+            for(i = 0; i < 6 * 9; i ++)
+                cube_out[i] = cube_in[i];
+            cube_out[0 * 9 + 0] = cube_in[2 * 9 + 2];
+            cube_out[0 * 9 + 1] = cube_in[2 * 9 + 5];
+            cube_out[0 * 9 + 2] = cube_in[2 * 9 + 8];
+            cube_out[2 * 9 + 2] = cube_in[5 * 9 + 8];
+            cube_out[2 * 9 + 5] = cube_in[5 * 9 + 7];
+            cube_out[2 * 9 + 8] = cube_in[5 * 9 + 6];
+            cube_out[5 * 9 + 8] = cube_in[4 * 9 + 6];
+            cube_out[5 * 9 + 7] = cube_in[4 * 9 + 3];
+            cube_out[5 * 9 + 6] = cube_in[4 * 9 + 0];
+            cube_out[4 * 9 + 6] = cube_in[0 * 9 + 0];
+            cube_out[4 * 9 + 3] = cube_in[0 * 9 + 1];
+            cube_out[4 * 9 + 0] = cube_in[0 * 9 + 2];
             //rotate a layer
-            temp[0] = cube[3][0]; temp[1] = cube[3][1]; temp[2] = cube[3][2];
-            temp[3] = cube[3][3]; temp[4] = cube[3][4]; temp[5] = cube[3][5];
-            temp[6] = cube[3][6]; temp[7] = cube[3][7]; temp[8] = cube[3][8];
-            cube[3][0] = temp[6]; cube[3][3] = temp[7];
-            cube[3][6] = temp[8]; cube[3][7] = temp[5];
-            cube[3][8] = temp[2]; cube[3][5] = temp[1];
-            cube[3][2] = temp[0]; cube[3][1] = temp[3];
+            cube_out[3 * 9 + 0] = cube_in[3 * 9 + 6];
+            cube_out[3 * 9 + 3] = cube_in[3 * 9 + 7];
+            cube_out[3 * 9 + 6] = cube_in[3 * 9 + 8];
+            cube_out[3 * 9 + 7] = cube_in[3 * 9 + 5];
+            cube_out[3 * 9 + 8] = cube_in[3 * 9 + 2];
+            cube_out[3 * 9 + 5] = cube_in[3 * 9 + 1];
+            cube_out[3 * 9 + 2] = cube_in[3 * 9 + 0];
+            cube_out[3 * 9 + 1] = cube_in[3 * 9 + 3];
             break;
         case 1: //x = 1
-            temp[0] = cube[0][6]; temp[1] = cube[0][7]; temp[2] = cube[0][8];
-            cube[0][6] = cube[2][0]; cube[0][7] = cube[2][3]; cube[0][8] = cube[2][6];
-            cube[2][0] = cube[5][2]; cube[2][3] = cube[5][1]; cube[2][6] = cube[5][0];
-            cube[5][2] = cube[4][8]; cube[5][1] = cube[4][5]; cube[5][0] = cube[4][2];
-            cube[4][8] = temp[0]; cube[4][5] = temp[1]; cube[4][2] = temp[2];
+            for(i = 0; i < 6 * 9; i ++)
+                cube_out[i] = cube_in[i];
+            cube_out[0 * 9 + 6] = cube_in[2 * 9 + 0];
+            cube_out[0 * 9 + 7] = cube_in[2 * 9 + 3];
+            cube_out[0 * 9 + 8] = cube_in[2 * 9 + 6];
+            cube_out[2 * 9 + 0] = cube_in[5 * 9 + 2];
+            cube_out[2 * 9 + 3] = cube_in[5 * 9 + 1];
+            cube_out[2 * 9 + 6] = cube_in[5 * 9 + 0];
+            cube_out[5 * 9 + 2] = cube_in[4 * 9 + 8];
+            cube_out[5 * 9 + 1] = cube_in[4 * 9 + 5];
+            cube_out[5 * 9 + 0] = cube_in[4 * 9 + 2];
+            cube_out[4 * 9 + 8] = cube_in[0 * 9 + 6];
+            cube_out[4 * 9 + 5] = cube_in[0 * 9 + 7];
+            cube_out[4 * 9 + 2] = cube_in[0 * 9 + 8];
             //rotate a layer
-            temp[0] = cube[1][0]; temp[1] = cube[1][1]; temp[2] = cube[1][2];
-            temp[3] = cube[1][3]; temp[4] = cube[1][4]; temp[5] = cube[1][5];
-            temp[6] = cube[1][6]; temp[7] = cube[1][7]; temp[8] = cube[1][8];
-            cube[1][0] = temp[2]; cube[1][3] = temp[1];
-            cube[1][6] = temp[0]; cube[1][7] = temp[3];
-            cube[1][8] = temp[6]; cube[1][5] = temp[7];
-            cube[1][2] = temp[8]; cube[1][1] = temp[5];
+            cube_out[1 * 9 + 0] = cube_in[1 * 9 + 2];
+            cube_out[1 * 9 + 3] = cube_in[1 * 9 + 1];
+            cube_out[1 * 9 + 6] = cube_in[1 * 9 + 0];
+            cube_out[1 * 9 + 7] = cube_in[1 * 9 + 3];
+            cube_out[1 * 9 + 8] = cube_in[1 * 9 + 6];
+            cube_out[1 * 9 + 5] = cube_in[1 * 9 + 7];
+            cube_out[1 * 9 + 2] = cube_in[1 * 9 + 8];
+            cube_out[1 * 9 + 1] = cube_in[1 * 9 + 5];
             break;
         case 2: //y = -1
-            temp[0] = cube[0][6]; temp[1] = cube[0][3]; temp[2] = cube[0][0];
-            cube[0][6] = cube[3][2]; cube[0][3] = cube[3][5]; cube[0][0] = cube[3][8];
-            cube[3][2] = cube[5][6]; cube[3][5] = cube[5][3]; cube[3][8] = cube[5][0];
-            cube[5][6] = cube[1][6]; cube[5][3] = cube[1][3]; cube[5][0] = cube[1][0];
-            cube[1][6] = temp[0]; cube[1][3] = temp[1]; cube[1][0] = temp[2];
+            for(i = 0; i < 6 * 9; i ++)
+                cube_out[i] = cube_in[i];
+            cube_out[0 * 9 + 6] = cube_in[3 * 9 + 2];
+            cube_out[0 * 9 + 3] = cube_in[3 * 9 + 5];
+            cube_out[0 * 9 + 0] = cube_in[3 * 9 + 8];
+            cube_out[3 * 9 + 2] = cube_in[5 * 9 + 6];
+            cube_out[3 * 9 + 5] = cube_in[5 * 9 + 3];
+            cube_out[3 * 9 + 8] = cube_in[5 * 9 + 0];
+            cube_out[5 * 9 + 6] = cube_in[1 * 9 + 6];
+            cube_out[5 * 9 + 3] = cube_in[1 * 9 + 3];
+            cube_out[5 * 9 + 0] = cube_in[1 * 9 + 0];
+            cube_out[1 * 9 + 6] = cube_in[0 * 9 + 6];
+            cube_out[1 * 9 + 3] = cube_in[0 * 9 + 3];
+            cube_out[1 * 9 + 0] = cube_in[0 * 9 + 0];
             //rotate a layer
-            temp[0] = cube[4][0]; temp[1] = cube[4][1]; temp[2] = cube[4][2];
-            temp[3] = cube[4][3]; temp[4] = cube[4][4]; temp[5] = cube[4][5];
-            temp[6] = cube[4][6]; temp[7] = cube[4][7]; temp[8] = cube[4][8];
-            cube[4][0] = temp[6]; cube[4][3] = temp[7];
-            cube[4][6] = temp[8]; cube[4][7] = temp[5];
-            cube[4][8] = temp[2]; cube[4][5] = temp[1];
-            cube[4][2] = temp[0]; cube[4][1] = temp[3];
+            cube_out[4 * 9 + 0] = cube_in[4 * 9 + 6];
+            cube_out[4 * 9 + 3] = cube_in[4 * 9 + 7];
+            cube_out[4 * 9 + 6] = cube_in[4 * 9 + 8];
+            cube_out[4 * 9 + 7] = cube_in[4 * 9 + 5];
+            cube_out[4 * 9 + 8] = cube_in[4 * 9 + 2];
+            cube_out[4 * 9 + 5] = cube_in[4 * 9 + 1];
+            cube_out[4 * 9 + 2] = cube_in[4 * 9 + 0];
+            cube_out[4 * 9 + 1] = cube_in[4 * 9 + 3];
             break;
         case 3: //y = 1
-            temp[0] = cube[0][8]; temp[1] = cube[0][5]; temp[2] = cube[0][2];
-            cube[0][8] = cube[3][0]; cube[0][5] = cube[3][3]; cube[0][2] = cube[3][6];
-            cube[3][0] = cube[5][8]; cube[3][3] = cube[5][5]; cube[3][6] = cube[5][2];
-            cube[5][8] = cube[1][8]; cube[5][5] = cube[1][5]; cube[5][2] = cube[1][2];
-            cube[1][8] = temp[0]; cube[1][5] = temp[1]; cube[1][2] = temp[2];
+            for(i = 0; i < 6 * 9; i ++)
+                cube_out[i] = cube_in[i];
+            cube_out[0 * 9 + 8] = cube_in[3 * 9 + 0];
+            cube_out[0 * 9 + 5] = cube_in[3 * 9 + 3];
+            cube_out[0 * 9 + 2] = cube_in[3 * 9 + 6];
+            cube_out[3 * 9 + 0] = cube_in[5 * 9 + 8];
+            cube_out[3 * 9 + 3] = cube_in[5 * 9 + 5];
+            cube_out[3 * 9 + 6] = cube_in[5 * 9 + 2];
+            cube_out[5 * 9 + 8] = cube_in[1 * 9 + 8];
+            cube_out[5 * 9 + 5] = cube_in[1 * 9 + 5];
+            cube_out[5 * 9 + 2] = cube_in[1 * 9 + 2];
+            cube_out[1 * 9 + 8] = cube_in[0 * 9 + 8];
+            cube_out[1 * 9 + 5] = cube_in[0 * 9 + 5];
+            cube_out[1 * 9 + 2] = cube_in[0 * 9 + 2];
             //rotate a layer
-            temp[0] = cube[2][0]; temp[1] = cube[2][1]; temp[2] = cube[2][2];
-            temp[3] = cube[2][3]; temp[4] = cube[2][4]; temp[5] = cube[2][5];
-            temp[6] = cube[2][6]; temp[7] = cube[2][7]; temp[8] = cube[2][8];
-            cube[2][0] = temp[2]; cube[2][3] = temp[1];
-            cube[2][6] = temp[0]; cube[2][7] = temp[3];
-            cube[2][8] = temp[6]; cube[2][5] = temp[7];
-            cube[2][2] = temp[8]; cube[2][1] = temp[5];
+            cube_out[2 * 9 + 0] = cube_in[2 * 9 + 2];
+            cube_out[2 * 9 + 3] = cube_in[2 * 9 + 1];
+            cube_out[2 * 9 + 6] = cube_in[2 * 9 + 0];
+            cube_out[2 * 9 + 7] = cube_in[2 * 9 + 3];
+            cube_out[2 * 9 + 8] = cube_in[2 * 9 + 6];
+            cube_out[2 * 9 + 5] = cube_in[2 * 9 + 7];
+            cube_out[2 * 9 + 2] = cube_in[2 * 9 + 8];
+            cube_out[2 * 9 + 1] = cube_in[2 * 9 + 5];
             break;
         case 4: //z = -1
-            temp[0] = cube[1][8]; temp[1] = cube[1][7]; temp[2] = cube[1][6];
-            cube[1][8] = cube[4][8]; cube[1][7] = cube[4][7]; cube[1][6] = cube[4][6];
-            cube[4][8] = cube[3][8]; cube[4][7] = cube[3][7]; cube[4][6] = cube[3][6];
-            cube[3][8] = cube[2][8]; cube[3][7] = cube[2][7]; cube[3][6] = cube[2][6];
-            cube[2][8] = temp[0]; cube[2][7] = temp[1]; cube[2][6] = temp[2];
+            for(i = 0; i < 6 * 9; i ++)
+                cube_out[i] = cube_in[i];
+            cube_out[1 * 9 + 8] = cube_in[4 * 9 + 8];
+            cube_out[1 * 9 + 7] = cube_in[4 * 9 + 7];
+            cube_out[1 * 9 + 6] = cube_in[4 * 9 + 6];
+            cube_out[4 * 9 + 8] = cube_in[3 * 9 + 8];
+            cube_out[4 * 9 + 7] = cube_in[3 * 9 + 7];
+            cube_out[4 * 9 + 6] = cube_in[3 * 9 + 6];
+            cube_out[3 * 9 + 8] = cube_in[2 * 9 + 8];
+            cube_out[3 * 9 + 7] = cube_in[2 * 9 + 7];
+            cube_out[3 * 9 + 6] = cube_in[2 * 9 + 6];
+            cube_out[2 * 9 + 8] = cube_in[1 * 9 + 8];
+            cube_out[2 * 9 + 7] = cube_in[1 * 9 + 7];
+            cube_out[2 * 9 + 6] = cube_in[1 * 9 + 6];
             //rotate a layer
-            temp[0] = cube[5][0]; temp[1] = cube[5][1]; temp[2] = cube[5][2];
-            temp[3] = cube[5][3]; temp[4] = cube[5][4]; temp[5] = cube[5][5];
-            temp[6] = cube[5][6]; temp[7] = cube[5][7]; temp[8] = cube[5][8];
-            cube[5][0] = temp[6]; cube[5][3] = temp[7];
-            cube[5][6] = temp[8]; cube[5][7] = temp[5];
-            cube[5][8] = temp[2]; cube[5][5] = temp[1];
-            cube[5][2] = temp[0]; cube[5][1] = temp[3];
+            cube_out[5 * 9 + 0] = cube_in[5 * 9 + 6];
+            cube_out[5 * 9 + 3] = cube_in[5 * 9 + 7];
+            cube_out[5 * 9 + 6] = cube_in[5 * 9 + 8];
+            cube_out[5 * 9 + 7] = cube_in[5 * 9 + 5];
+            cube_out[5 * 9 + 8] = cube_in[5 * 9 + 2];
+            cube_out[5 * 9 + 5] = cube_in[5 * 9 + 1];
+            cube_out[5 * 9 + 2] = cube_in[5 * 9 + 0];
+            cube_out[5 * 9 + 1] = cube_in[5 * 9 + 3];
             break;
         case 5: //z = 1
-            temp[0] = cube[1][2]; temp[1] = cube[1][1]; temp[2] = cube[1][0];
-            cube[1][2] = cube[4][2]; cube[1][1] = cube[4][1]; cube[1][0] = cube[4][0];
-            cube[4][2] = cube[3][2]; cube[4][1] = cube[3][1]; cube[4][0] = cube[3][0];
-            cube[3][2] = cube[2][2]; cube[3][1] = cube[2][1]; cube[3][0] = cube[2][0];
-            cube[2][2] = temp[0]; cube[2][1] = temp[1]; cube[2][0] = temp[2];
+            for(i = 0; i < 6 * 9; i ++)
+                cube_out[i] = cube_in[i];
+            cube_out[1 * 9 + 2] = cube_in[4 * 9 + 2];
+            cube_out[1 * 9 + 1] = cube_in[4 * 9 + 1];
+            cube_out[1 * 9 + 0] = cube_in[4 * 9 + 0];
+            cube_out[4 * 9 + 2] = cube_in[3 * 9 + 2];
+            cube_out[4 * 9 + 1] = cube_in[3 * 9 + 1];
+            cube_out[4 * 9 + 0] = cube_in[3 * 9 + 0];
+            cube_out[3 * 9 + 2] = cube_in[2 * 9 + 2];
+            cube_out[3 * 9 + 1] = cube_in[2 * 9 + 1];
+            cube_out[3 * 9 + 0] = cube_in[2 * 9 + 0];
+            cube_out[2 * 9 + 2] = cube_in[1 * 9 + 2];
+            cube_out[2 * 9 + 1] = cube_in[1 * 9 + 1];
+            cube_out[2 * 9 + 0] = cube_in[1 * 9 + 0];
             //rotate a layer
-            temp[0] = cube[0][0]; temp[1] = cube[0][1]; temp[2] = cube[0][2];
-            temp[3] = cube[0][3]; temp[4] = cube[0][4]; temp[5] = cube[0][5];
-            temp[6] = cube[0][6]; temp[7] = cube[0][7]; temp[8] = cube[0][8];
-            cube[0][0] = temp[2]; cube[0][3] = temp[1];
-            cube[0][6] = temp[0]; cube[0][7] = temp[3];
-            cube[0][8] = temp[6]; cube[0][5] = temp[7];
-            cube[0][2] = temp[8]; cube[0][1] = temp[5];
+            cube_out[0 * 9 + 0] = cube_in[0 * 9 + 2];
+            cube_out[0 * 9 + 3] = cube_in[0 * 9 + 1];
+            cube_out[0 * 9 + 6] = cube_in[0 * 9 + 0];
+            cube_out[0 * 9 + 7] = cube_in[0 * 9 + 3];
+            cube_out[0 * 9 + 8] = cube_in[0 * 9 + 6];
+            cube_out[0 * 9 + 5] = cube_in[0 * 9 + 7];
+            cube_out[0 * 9 + 2] = cube_in[0 * 9 + 8];
+            cube_out[0 * 9 + 1] = cube_in[0 * 9 + 5];
             break;
         default:
             break;
-    }*/
+    }
 }
 
 void print_cube(unsigned char *cube)
@@ -175,15 +235,13 @@ void print_cube(unsigned char *cube)
     }
 }
 
-int equal_start(unsigned char *cube)
+int cube_equal(unsigned char *cube1, unsigned char *cube2)
 {
-    int i, j;
+    int i;
 
-    for(i = 0; i < 6; i ++)
-        for(j = 0; j < 9; j ++) {
-            if(cube[i * 9 + j] != cube_start[i][j])
-                return 0;
-        }
+    for(i = 0; i < 6 * 9; i ++)
+        if(cube1[i] != cube2[i])
+            return 0;
     return 1;
 }
 
@@ -194,7 +252,7 @@ int main(void)
     int i, j;
     unsigned char stack_rotate[1000];   //stack to save 6-branch searching tree
     unsigned char depth, depth_limit;
-    unsigned char record[64];   //as cube data
+    unsigned char record[64 * 1000];   //as cube data
 
     printf("Search for Rubik's cube.\n");
 
@@ -203,23 +261,25 @@ int main(void)
     for(i = 0; i < 6; i ++) {
         for(j = 0; j < 3; j ++) {
             fscanf(file_cube_start, "%c %c %c\n", &c0, &c1, &c2);
-            cube_start[i][j * 3] = c0;
-            cube_start[i][j * 3 + 1] = c1;
-            cube_start[i][j * 3 + 2] = c2;
+            cube_start[i * 9 + j * 3] = c0;
+            cube_start[i * 9 + j * 3 + 1] = c1;
+            cube_start[i * 9 + j * 3 + 2] = c2;
         }
         if(i != 5)
             fscanf(file_cube_start, "\n");
     }
-    //Save the start value.
-    for(i = 0; i < 6; i ++)
-        for(j = 0; j < 9; j ++)
-            record[i * 9 + j] = cube_start[i][j];
-    print_cube(record);
-
-//    rotate(0, record);
-//    printf("%d\n", equal_start());
-
     fclose(file_cube_start);
+    print_cube(cube_start);
+
+    rotate(0, cube_start, record);
+    rotate(1, record, record + 64);
+    rotate(2, record + 64 * 1, record + 64 * 2);
+    rotate(3, record + 64 * 2, record + 64 * 3);
+    rotate(4, record + 64 * 3, record + 64 * 4);
+    rotate(5, record + 64 * 4, record + 64 * 5);
+    //printf("%d\n", cube_equal(cube_start, record + 64 * 3));
+    print_cube(record + 64 * 5);
+
     return 0;
 }
 
