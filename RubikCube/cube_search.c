@@ -1,5 +1,10 @@
 #include <stdio.h>
 
+unsigned char record[64 * 1000];   //as cube data
+unsigned char stack_rotate[1000];   //stack to save 6-branch searching tree
+int depth_limit = 100; //stack status and limit
+int sp = 0; //stack top pointer
+
 unsigned char cube_start[6 * 9] = {
     'w', 'w', 'w', //top, z+
     'w', 'w', 'w',
@@ -245,14 +250,41 @@ int cube_equal(unsigned char *cube1, unsigned char *cube2)
     return 1;
 }
 
+int push_cube(unsigned char rotate_type)
+{
+    unsigned char *cube_source;
+
+    if(sp < depth_limit) {
+        if(sp > 0)
+            cube_source = record + (sp - 1) * 64;
+        else
+            cube_source = cube_start;
+        rotate(rotate_type, cube_source, record + sp * 64);
+        stack_rotate[sp] = rotate_type;
+        sp ++;
+        return 0;
+    }
+    else
+        return 1;
+}
+
+unsigned char pop_cube(void)
+{
+    if(sp > 0) {
+        sp --;
+        return stack_rotate[sp];
+    }
+    else
+        return 0xff;
+}
+
 int main(void)
 {
     unsigned char c0, c1, c2;
     FILE *file_cube_start;
     int i, j;
-    unsigned char stack_rotate[1000];   //stack to save 6-branch searching tree
-    unsigned char depth, depth_limit;
-    unsigned char record[64 * 1000];   //as cube data
+    int path_no = 0;
+    unsigned char rotate_type;
 
     printf("Search for Rubik's cube.\n");
 
@@ -271,14 +303,46 @@ int main(void)
     fclose(file_cube_start);
     print_cube(cube_start);
 
-    rotate(0, cube_start, record);
-    rotate(1, record, record + 64);
-    rotate(2, record + 64 * 1, record + 64 * 2);
-    rotate(3, record + 64 * 2, record + 64 * 3);
-    rotate(4, record + 64 * 3, record + 64 * 4);
-    rotate(5, record + 64 * 4, record + 64 * 5);
-    //printf("%d\n", cube_equal(cube_start, record + 64 * 3));
-    print_cube(record + 64 * 5);
+    depth_limit = 8;
+    rotate_type = 0;
+    //Deep-at-first search.
+    while(sp < depth_limit)
+    {
+        push_cube(rotate_type);
+        if(cube_equal(cube_start, record + (sp - 1) * 64)) {
+            printf("\nEqual when sp = %d!\n", sp);
+            printf("Path %d: ", path_no ++);
+            for(i = 0; i < sp; i ++)
+                printf("%d, ", stack_rotate[i]);
+            printf("\n");
+            //At a success path end, return.
+            rotate_type = pop_cube();
+            while((sp > 0) && (rotate_type >= 5))
+                //Return to the last depth
+                rotate_type = pop_cube();
+            if((sp == 0) && (rotate_type >= 5))
+                //End research
+                break;
+            else    //Search in the horizontal direction.
+                rotate_type ++;
+        }
+        //At the deepest layer, return.
+        else if(sp == depth_limit) {
+            rotate_type = pop_cube();
+            while((sp > 0) && (rotate_type >= 5))
+                //Return to the last depth
+                rotate_type = pop_cube();
+            if((sp == 0) && (rotate_type >= 5))
+                //End research
+                break;
+            else    //Search in the horizontal direction.
+                rotate_type ++;
+        }
+        //To a deeper layer, start from 0.
+        else
+            rotate_type = 0;
+    }
+    //print_cube(record + (sp - 1) * 64);
 
     return 0;
 }
