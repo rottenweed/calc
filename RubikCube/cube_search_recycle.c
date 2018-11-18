@@ -250,28 +250,6 @@ int cube_equal(unsigned char *cube1, unsigned char *cube2)
     return 1;
 }
 
-int cube_2row(unsigned  char *cube)
-{
-    int i;
-
-    for(i = 0; i < 9; i ++) //check top
-        if(cube[i] != 'w')
-            return 0;
-    for(i = 9; i < 9 + 6; i ++) //check hor0
-        if(cube[i] != 'r')
-            return 0;
-    for(i = 9 * 2; i < 9 * 2 + 6; i ++) //check hor1
-        if(cube[i] != 'b')
-            return 0;
-    for(i = 9 * 3; i < 9 * 3 + 6; i ++) //check hor2
-        if(cube[i] != 'o')
-            return 0;
-    for(i = 9 * 4; i < 9 * 4 + 6; i ++) //check hor3
-        if(cube[i] != 'g')
-            return 0;
-    return 1;
-}
-
 int push_cube(unsigned char rotate_type)
 {
     unsigned char *cube_source;
@@ -305,9 +283,8 @@ int main(void)
     unsigned char c0, c1, c2;
     FILE *file_cube_start;
     int i, j;
+    int path_no = 0;
     unsigned char rotate_type;
-    long count_l = 0;
-    long count_h = 0;
 
     printf("Search for Rubik's cube.\n");
 
@@ -326,90 +303,47 @@ int main(void)
     fclose(file_cube_start);
     print_cube(cube_start);
 
-    depth_limit = 10;
+    depth_limit = 8;
     rotate_type = 0;
     //Deep-at-first search.
     while(sp < depth_limit)
     {
-        int sp_last = sp;
         push_cube(rotate_type);
-        count_l ++;
-        if(count_l == 100000000) {
-            printf("Count_l meets 100,000,000. Count_h: %ld\n", count_h);
-            count_l = 0;
-            count_h ++;
-        }
-        if(cube_equal(cube_start, record + sp_last * 64)) {
-            //At a recycle path end same as the start, return.
+        if(cube_equal(cube_start, record + (sp - 1) * 64)) {
+            printf("\nEqual when sp = %d!\n", sp);
+            printf("Path %d: ", path_no ++);
+            for(i = 0; i < sp; i ++)
+                printf("%d, ", stack_rotate[i]);
+            printf("\n");
+            //At a recycle path end, return.
             rotate_type = pop_cube();
             while((sp > 0) && (rotate_type >= 5))
                 //Return to the last depth
                 rotate_type = pop_cube();
             if((sp == 0) && (rotate_type >= 5))
                 //End research
-                rotate_type = 0xff;
+                break;
             else    //Search in the horizontal direction.
                 rotate_type ++;
         }
-        //Meet 2-row.
-        else if(cube_2row(record + sp_last * 64)) {
-            printf("\nFulfill 2-row when sp = %d!\n", sp);
-            for(i = 0; i < sp; i ++)
-                printf("%d, ", stack_rotate[i]);
-            printf("\n");
-            print_cube(record + sp_last * 64);
-            rotate_type = 0xff;
-        }
-        //check recycle between two middle cube
-        else if(sp > 0) {
-            for(i = 0; i < sp_last - 1; i ++) {
-                if(cube_equal(record + i * 64, record + sp_last * 64)) {
-                    rotate_type = pop_cube();
-                    while((sp > 0) && (rotate_type >= 5))
-                        //Return to the last depth
-                        rotate_type = pop_cube();
-                    if((sp == 0) && (rotate_type >= 5)) {
-                        //End research
-                        rotate_type = 0xff;
-                    }
-                    else    //Search in the horizontal direction.
-                        rotate_type ++;
-                    break;
-                }
-            }
-        }
-
-        //All the search is end.
-        if(rotate_type > 5)
-            break;
-
-        //To a deeper layer, check.
-        if(sp > sp_last) {
-            //At the deepest layer, return.
-            if(sp == depth_limit) {
+        //At the deepest layer, return.
+        else if(sp == depth_limit) {
+            rotate_type = pop_cube();
+            while((sp > 0) && (rotate_type >= 5))
+                //Return to the last depth
                 rotate_type = pop_cube();
-                while((sp > 0) && (rotate_type >= 5))
-                    //Return to the last depth
-                    rotate_type = pop_cube();
-                if((sp == 0) && (rotate_type >= 5)) {
-                    //End research
-                    rotate_type = 0xff;
-                    break;
-                }
-                else    //Search in the horizontal direction.
-                    rotate_type ++;
-            }
-            //To a deeper layer, start from 0.
-            else
-                rotate_type = 0;
+            if((sp == 0) && (rotate_type >= 5))
+                //End research
+                break;
+            else    //Search in the horizontal direction.
+                rotate_type ++;
         }
+        //To a deeper layer, start from 0.
+        else
+            rotate_type = 0;
     }
+    //print_cube(record + (sp - 1) * 64);
 
-    printf("Exit %d, %d\n", sp, rotate_type);
-    printf("%ld: %ld\n", count_h, count_l);
-    for(i = 0; i < sp; i ++)
-        printf("%d, ", stack_rotate[i]);
-    printf("\n");
     return 0;
 }
 
