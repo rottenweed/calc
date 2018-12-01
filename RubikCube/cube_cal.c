@@ -66,8 +66,8 @@ int cube_equal(unsigned char *cube1, unsigned char *cube2)
     int error = 0;
 
     for(i = 0; i < 6 * 9; i ++)
-        if(cube1[i] != cube2[i]){
-            printf("Error on %d!\n", i);
+        if(cube1[i] != cube2[i]) {
+//            printf("Error on %d!\n", i);
             error ++;
         }
     if(error == 0)
@@ -129,6 +129,7 @@ unsigned char pop_cube(void)
 int main(void)
 {
     int i;
+
     for(i = 0; i < 64; i ++)
         record[i] = i;
     rotate(5, record, record + 64);
@@ -140,6 +141,22 @@ int main(void)
     if(cube_equal(record + 192, record + 256))
         printf("rotate equal\n");
 
+    for(i = 0; i < 64; i ++) {
+        record[i] = i;
+        record[128 + i] = i;
+    }
+    for(i = 0; i < 10000; i ++) {
+        rotate(9, record + 128, record + 64);
+        rotate(5, record + 64, record + 128);
+        if(cube_equal(record, record + 64)) {
+            printf("Equal after rotate_9 when i = %d\n", i);
+            break;
+        }
+        if(cube_equal(record, record + 128)) {
+            printf("Equal after rotate_5 when i = %d\n", i);
+            break;
+        }
+    }
     return 0;
 }
 
